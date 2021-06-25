@@ -1,0 +1,15 @@
+#!/usr/bin/stap
+
+global count
+
+probe begin {
+	count = 0
+}
+
+probe kernel.statement("*@*kernel/time/timekeeping.c:2195") {
+	printf("ticks %d jffies %d\n", $ticks, $jiffies_64)
+	print_backtrace()
+	count++
+	if (count > 5)
+		exit()
+

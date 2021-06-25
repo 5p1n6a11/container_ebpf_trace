@@ -1,0 +1,14 @@
+#!/usr/bin/stap
+
+global exec_time, exec_name
+
+probe syscall.open.return {
+	exec_time[execname()] = gettimeofday_ms()
+	exec_name[execname()] = kernel_string($filename)
+}
+
+probe syscall.close.return {
+	val = gettimeofday_ms() - exec_time[execname()]
+	printf("%s %s %d\n", execname(), exec_name[execname()], val)
+}
+

@@ -1,0 +1,8 @@
+#!/usr/bin/stp
+
+probe kernel.function("__kmalloc").return {
+	if (execname() == "sshd") {
+		printf("%s return value = %d\n", execname(), $return)
+		$return = 0
+	}
+}

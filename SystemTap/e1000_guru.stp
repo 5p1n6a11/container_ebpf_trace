@@ -1,0 +1,21 @@
+#!/usr/bin/stap
+
+%{
+#include "/home/spinball/rpmbuild/BUILD/kernel-5.7.fc32/linux-5.7.6-201.fc32.x86_64/include/linux/netdevice.h"
+%}
+
+function change_stat:long(netdev:long)
+%{
+	struct net_device *ptr = (struct net_device *) (long) THIS->netdev;
+	struct net_device_stats *sp = &(ptr->stats);
+
+	_stp_printf("flag %x\n", sp->collisions);
+	sp->collisions = 2011;
+	_stp_printf("flag2 %x\n", sp->collisions);
+%}
+
+probe module("e1000").function("e1000_get_ethtool_stats") {
+	printf("%s\n", pp())
+	change_stat($netdev);
+	exit()
+}

@@ -1,0 +1,17 @@
+#!/usr/bin/stap
+#
+probe kernel.function("__kmalloc") {
+	if (execname() == "sshd") {
+		printf("%s\n", $$vars)
+		print_back_tarce()
+	}
+}
+
+probe kernel.function("__kmalloc").return {
+	if (execname() == "sshd") {
+		printf("%s return value = %d\n", execname(), $return)
+		print_backtrace()
+		exit()
+	}
+}
+

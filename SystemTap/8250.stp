@@ -1,0 +1,7 @@
+#!/usr/bin/stap
+
+
+probe kernel.function("serial8250_start_tx") {
+	printf("open!(%d)\n", pid())
+	print_backtrace()
+}

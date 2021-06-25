@@ -1,0 +1,7 @@
+#!/usr/bin/stap
+#
+probe kernel.function("__switch_to") {
+	printf("%s\n", $$vars)
+	printf("%s to %s\n", execname(), kernel_string($next_p->comm))
+}
+

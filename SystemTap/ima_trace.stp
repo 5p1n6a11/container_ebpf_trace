@@ -1,0 +1,49 @@
+#!/usr/bin/env stap
+
+probe begin {
+	printf("*** start ***\n")
+}
+
+probe kernel.function("ima_file_check"),
+      kernel.function("process_measurement"),
+      kernel.function("ima_get_action"),
+      kernel.function("ima_read_xattr"),
+      kernel.function("ima_get_cache_status"),
+      kernel.function("ima_get_hash_algo"),
+      kernel.function("ima_collect_measurement"),
+      kernel.function("ima_d_path"),
+      kernel.function("ima_store_measurement"),
+      kernel.function("ima_appraise_measurement"),
+      kernel.function("ima_audit_measurement")
+{
+	printf("%s -> %s\n", thread_indent(3), probefunc())
+}
+
+probe kernel.function("ima_file_check").return,
+      kernel.function("process_measurement").return,
+      kernel.function("ima_get_action").return,
+      kernel.function("ima_read_xattr").return,
+      kernel.function("ima_get_cache_status").return,
+      kernel.function("ima_get_hash_algo").return,
+      kernel.function("ima_collect_measurement").return,
+      kernel.function("ima_d_path").return,
+      kernel.function("ima_store_measurement").return,
+      kernel.function("ima_appraise_measurement").return,
+      kernel.function("ima_audit_measurement").return
+{
+    printf("%s <- %s\n", thread_indent(-3), probefunc())
+}
+
+probe kernel.function("ima_calc_file_hash")
+{
+    printf("%s -> %s\n", thread_indent(3), probefunc())
+}
+
+probe kernel.function("ima_calc_file_hash").return
+{
+    printf("%s <- %s\n", thread_indent(-3), probefunc())
+}
+
+probe end {
+	printf("*** done ***\n")
+}

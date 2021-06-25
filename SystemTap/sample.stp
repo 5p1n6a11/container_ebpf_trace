@@ -1,0 +1,21 @@
+#!/usr/bin/stap
+#
+# 初めてのスクリプトプログラミング
+
+/*
+ * スクリプト内で変数をグローバル化する
+ */
+
+global n
+
+// スクリプト実行時、最初に呼び出されるプローブポイント。
+probe begin {
+	n = 2010
+	printf("hello, world. (%d)\n", n)
+}
+
+// スクリプト終了時に呼び出されるプローブポイント
+probe end {
+	n++
+	printf("Goodbye. (%d)\n", n)
+}
